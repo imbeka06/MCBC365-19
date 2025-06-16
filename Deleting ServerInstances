@@ -1,0 +1,26 @@
+>> # Define the server instances to remove
+>> $serverInstances = @("AGILE", "TEST", "AGILE2", "AGILE3")
+>>
+>> foreach ($instance in $serverInstances) {
+>>     try {
+>>         # Check if the instance exists before attempting to remove it
+>>         if (Get-NAVServerInstance -ServerInstance $instance -ErrorAction SilentlyContinue) {
+>>             Write-Host "Removing server instance: $instance"
+>>
+>>             # Stop the instance first if it's running
+>>             if ((Get-NAVServerInstance -ServerInstance $instance).State -ne "Stopped") {
+>>                 Stop-NAVServerInstance -ServerInstance $instance -Force
+>>             }
+>>
+>>             # Remove the server instance
+>>             Remove-NAVServerInstance -ServerInstance $instance -Force
+>>
+>>             Write-Host "Successfully removed server instance: $instance"
+>>         } else {
+>>             Write-Host "Server instance $instance does not exist - skipping"
+>>         }
+>>     }
+>>     catch {
+>>         Write-Host "Error removing server instance $instance : $_" -ForegroundColor Red
+>>     }
+>> }
